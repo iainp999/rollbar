@@ -25,6 +25,9 @@ function rollbar_page_attachments_alter(array &$attachments) {
       'rollbar_js_url' => $config->get('rollbar_js_url'),
     ];
 
+    // Allow alteration of the rollbar settings by other modules.
+    \Drupal::moduleHandler()->alter('rollbar_settings', $settings);
+
     $attachments['#attached']['library'][] = 'rollbar/global';
     $attachments['#attached']['drupalSettings']['rollbar'] = $settings;
   }
