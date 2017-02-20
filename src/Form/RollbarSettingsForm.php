@@ -84,13 +84,6 @@ class RollbarSettingsForm extends ConfigFormBase {
       ->set('environment', $form_state->getValue('environment'))
       ->set('rollbar_js_url', $form_state->getValue('rollbar_js_url'))
       ->save();
-    \Drupal::logger('rollbar_d8')->emergency('First emergency message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->alert('First alert message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->critical('First critical message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->error('First error message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->warning('First warning message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->info('First info message from Drupal 8');
-    \Drupal::logger('rollbar_d8')->debug('First debug message from Drupal 8');
     parent::submitForm($form, $form_state);
   }
 
