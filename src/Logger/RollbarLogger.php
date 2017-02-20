@@ -45,7 +45,7 @@ class RollbarLogger implements LoggerInterface {
   );
 
   /**
-   * Constructs a SysLog object.
+   * Constructs a Rollbar object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration factory object.
