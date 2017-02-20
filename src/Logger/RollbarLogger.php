@@ -11,13 +11,13 @@ use Rollbar;
 use Level as RollbarLogLevel;
 
 /**
- * Redirects logging messages to syslog.
+ * Redirects logging messages to Rollbar.
  */
 class RollbarLogger implements LoggerInterface {
   use RfcLoggerTrait;
 
   /**
-   * A configuration object containing syslog settings.
+   * A configuration object containing rollbar settings.
    *
    * @var \Drupal\Core\Config\Config
    */
