@@ -1,0 +1,9 @@
+rollbar.settings:
+  path: '/admin/config/services/rollbar'
+  defaults:
+    _form: '\Drupal\rollbar\Form\RollbarSettingsForm'
+    _title: 'Rollbar'
+  requirements:
+    _permission: 'administer rollbar'
+  options:
+    _admin_route: true

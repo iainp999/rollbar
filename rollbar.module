@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Module file for 'rollbar'.
+ */
+
+/**
+ * Implements hook_page_attachments_alter().
+ *
+ * Retrieves the configured settings for the rollbar library.  Attaches the
+ * rollbar JS snippet to the page, along with the retrieved settings as
+ * part of the `drupalSettings` object.
+ */
+function rollbar_page_attachments_alter(array &$attachments) {
+  $config = \Drupal::config('rollbar.settings');
+
+  // We only add the library and settings to the page if enabled.
+  if (!empty($config) && $config->get('enabled')) {
+    $settings = [
+      'access_token' => $config->get('access_token'),
+      'capture_uncaught' => $config->get('capture_uncaught'),
+      'capture_unhandled_rejections' => $config->get('capture_unhandled_rejections'),
+      'environment' => $config->get('environment'),
+      'rollbar_js_url' => $config->get('rollbar_js_url'),
+    ];
+
+    $attachments['#attached']['library'][] = 'rollbar/global';
+    $attachments['#attached']['drupalSettings']['rollbar'] = $settings;
+  }
+}

@@ -1,0 +1,5 @@
+name: Rollbar
+description: Integration with Rollbar
+type: module
+core: 8.x
+package: Services

@@ -1,0 +1,7 @@
+global:
+  version: VERSION
+  header: true
+  js:
+    js/rollbar.js: {}
+  dependencies:
+    - core/drupalSettings

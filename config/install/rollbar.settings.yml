@@ -1,0 +1,6 @@
+enabled: false
+access_token:
+capture_uncaught: true
+capture_unhandled_rejections: false
+environment: production
+rollbar_js_url: https://cdnjs.cloudflare.com/ajax/libs/rollbar.js/1.9.3/rollbar.min.js
