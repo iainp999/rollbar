@@ -84,6 +84,7 @@ class RollbarSettingsForm extends ConfigFormBase {
       ->set('environment', $form_state->getValue('environment'))
       ->set('rollbar_js_url', $form_state->getValue('rollbar_js_url'))
       ->save();
+
     parent::submitForm($form, $form_state);
   }
 
