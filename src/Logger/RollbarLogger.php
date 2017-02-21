@@ -7,8 +7,8 @@ use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
-use Rollbar;
-use Level as RollbarLogLevel;
+use Rollbar\Rollbar;
+use Rollbar\Payload\Level as RollbarLogLevel;
 
 /**
  * Redirects logging messages to Rollbar.
@@ -31,18 +31,11 @@ class RollbarLogger implements LoggerInterface {
   protected $parser;
 
   /**
-   * @var array
+   * Checks if the Rollbar is initialized.
+   *
+   * @var bool
    */
-  private $verbosityLevelMap = array(
-    RfcLogLevel::EMERGENCY => RollbarLogLevel::CRITICAL,
-    RfcLogLevel::ALERT => RollbarLogLevel::CRITICAL,
-    RfcLogLevel::CRITICAL => RollbarLogLevel::CRITICAL,
-    RfcLogLevel::ERROR => RollbarLogLevel::ERROR,
-    RfcLogLevel::WARNING => RollbarLogLevel::WARNING,
-    RfcLogLevel::NOTICE => RollbarLogLevel::INFO,
-    RfcLogLevel::INFO => RollbarLogLevel::INFO,
-    RfcLogLevel::DEBUG => RollbarLogLevel::DEBUG,
-  );
+  private $isInitialized = FALSE;
 
   /**
    * Constructs a Rollbar object.
@@ -55,17 +48,49 @@ class RollbarLogger implements LoggerInterface {
   public function __construct(ConfigFactoryInterface $config_factory, LogMessageParserInterface $parser) {
     $this->config = $config_factory->get('rollbar.settings');
     $this->parser = $parser;
-    Rollbar::init(['access_token' => $this->config->get('access_token')]);
   }
 
+  /**
+   * Initialize rollbar object.
+   */
+  protected function init() {
+    $token = $this->config->get('access_token');
+    $environment = $this->config->get('environment');
+
+    if (empty($token) || empty($environment)) {
+      return FALSE;
+    }
+
+    if (!$this->isInitialized) {
+      Rollbar::init(['access_token' => $token, 'environment' => $environment]);
+      $this->isInitialized = TRUE;
+    }
+
+    return TRUE;
+  }
   /**
    * {@inheritdoc}
    */
   public function log($level, $message, array $context = array()) {
+    if (!$this->init()) {
+      return;
+    }
+    $level_map = array(
+      RfcLogLevel::EMERGENCY => RollbarLogLevel::critical(),
+      RfcLogLevel::ALERT =>  RollbarLogLevel::critical(),
+      RfcLogLevel::CRITICAL =>  RollbarLogLevel::critical(),
+      RfcLogLevel::ERROR =>  RollbarLogLevel::error(),
+      RfcLogLevel::WARNING =>  RollbarLogLevel::warning(),
+      RfcLogLevel::NOTICE =>  RollbarLogLevel::info(),
+      RfcLogLevel::INFO =>  RollbarLogLevel::info(),
+      RfcLogLevel::DEBUG =>  RollbarLogLevel::debug(),
+    );
+
     // Populate the message placeholders and then replace them in the message.
     $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
     $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
-    Rollbar::report_message($message, $this->verbosityLevelMap[$level]);
+    Rollbar::log($message, $context, $level_map[$level]);
   }
 
 }
+
