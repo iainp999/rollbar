@@ -1,5 +1,5 @@
 enabled: false
-access_token:
+access_token: null
 capture_uncaught: true
 capture_unhandled_rejections: false
 environment: production

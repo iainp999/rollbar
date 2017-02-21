@@ -31,8 +31,11 @@ class RollbarLogger implements LoggerInterface {
   protected $parser;
 
   /**
-   * @var array
+   * Checks if the Rollbar is initialized.
+   *
+   * @var bool
    */
+  private $isInitialized = FALSE;
 
   /**
    * Constructs a Rollbar object.
@@ -45,13 +48,22 @@ class RollbarLogger implements LoggerInterface {
   public function __construct(ConfigFactoryInterface $config_factory, LogMessageParserInterface $parser) {
     $this->config = $config_factory->get('rollbar.settings');
     $this->parser = $parser;
-    Rollbar::init(['access_token' => $this->config->get('access_token'), 'environment' => $this->config->get('environment')]);
   }
 
+  /**
+   * Initialize rollbar object.
+   */
+  protected function init() {
+    if (!$this->isInitialized) {
+      Rollbar::init(['access_token' => $this->config->get('access_token'), 'environment' => $this->config->get('environment')]);
+      $this->isInitialized = TRUE;
+    }
+  }
   /**
    * {@inheritdoc}
    */
   public function log($level, $message, array $context = array()) {
+    $this->init();
     $level_map = array(
       RfcLogLevel::EMERGENCY => RollbarLogLevel::critical(),
       RfcLogLevel::ALERT =>  RollbarLogLevel::critical(),
