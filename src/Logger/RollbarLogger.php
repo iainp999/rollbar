@@ -54,16 +54,27 @@ class RollbarLogger implements LoggerInterface {
    * Initialize rollbar object.
    */
   protected function init() {
+    $token = $this->config->get('access_token');
+    $environment = $this->config->get('environment');
+
+    if (empty($token) || empty($environment)) {
+      return FALSE;
+    }
+
     if (!$this->isInitialized) {
-      Rollbar::init(['access_token' => $this->config->get('access_token'), 'environment' => $this->config->get('environment')]);
+      Rollbar::init(['access_token' => $token, 'environment' => $environment]);
       $this->isInitialized = TRUE;
     }
+
+    return TRUE;
   }
   /**
    * {@inheritdoc}
    */
   public function log($level, $message, array $context = array()) {
-    $this->init();
+    if (!$this->init()) {
+      return;
+    }
     $level_map = array(
       RfcLogLevel::EMERGENCY => RollbarLogLevel::critical(),
       RfcLogLevel::ALERT =>  RollbarLogLevel::critical(),
@@ -82,3 +93,4 @@ class RollbarLogger implements LoggerInterface {
   }
 
 }
+
