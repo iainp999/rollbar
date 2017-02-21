@@ -2,5 +2,8 @@
   "name": "iainp999/rollbar",
   "description": "Rollbar integration for Drupal 8.",
   "type": "drupal-module",
-  "license": "GPL 2.0+"
+  "license": "GPL 2.0+",
+  "require": {
+    "rollbar/rollbar": "~0.18.2"
+  }
 }

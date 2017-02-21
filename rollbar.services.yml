@@ -1,0 +1,6 @@
+services:
+  logger.rollbar:
+    class: Drupal\rollbar\Logger\RollbarLogger
+    arguments: ['@config.factory', '@logger.log_message_parser']
+    tags:
+      - { name: logger }
